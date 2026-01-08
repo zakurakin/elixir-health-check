@@ -7,6 +7,7 @@ defmodule HealthCheck.MixProject do
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
+      test_coverage: [tool: ExCoveralls],
       deps: deps(),
       description:
         "Simple health check library for Elixir applications with support for Ecto, Redix and Kaffe.",
