@@ -40,13 +40,22 @@ defmodule HealthCheck.Router do
   def call(conn, opts) do
     case conn.path_info do
       [path] when path in ["liveness", "readiness"] ->
-        conn
-        |> assign(:otp_app, opts[:otp_app])
-        |> Handler.call(opts)
-        |> halt()
+        dispatch(conn, path, opts)
+
+      ["health", path] when path in ["liveness", "readiness"] ->
+        dispatch(conn, path, opts)
 
       _ ->
         conn
     end
+  end
+
+  defp dispatch(conn, path, opts) do
+    opts = Enum.into(opts, %{})
+
+    %{conn | path_info: [path]}
+    |> assign(:otp_app, opts[:otp_app])
+    |> Handler.call(opts)
+    |> halt()
   end
 end

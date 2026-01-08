@@ -16,7 +16,7 @@ defmodule HealthCheck do
             :kafka -> HealthCheck.Checkers.Kafka.check(config)
             :endpoint -> HealthCheck.Checkers.Endpoint.check(config)
             :mongo -> HealthCheck.Checkers.Mongo.check(config)
-            _ -> do_check(config)
+            _ -> execute(config)
           end
 
         {name, status}
@@ -34,7 +34,8 @@ defmodule HealthCheck do
     end
   end
 
-  defp do_check({m, f, a}), do: apply(m, f, a)
-  defp do_check(fun) when is_function(fun, 0), do: fun.()
-  defp do_check(_), do: :ok
+  @doc false
+  def execute({m, f, a}), do: apply(m, f, a)
+  def execute(fun) when is_function(fun, 0), do: fun.()
+  def execute(_), do: :ok
 end
