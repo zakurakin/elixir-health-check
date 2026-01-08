@@ -1,9 +1,9 @@
-defmodule HealthCheck.Checkers.Minio do
+defmodule HealthCheck.Checkers.Endpoint do
   @moduledoc false
   require Logger
 
   def check(config \\ []) do
-    endpoint = config[:endpoint] || System.get_env("MINIO_ENDPOINT")
+    endpoint = config[:endpoint]
 
     if is_binary(endpoint) and endpoint != "" do
       perform_check(endpoint, config)
@@ -21,17 +21,17 @@ defmodule HealthCheck.Checkers.Minio do
           :ok
 
         {:ok, %HTTPoison.Response{status_code: code}} ->
-          Logger.error("Minio health check failed for #{endpoint}: status code #{code}")
-          {:error, :minio_error}
+          Logger.error("Endpoint health check failed for #{endpoint}: status code #{code}")
+          {:error, :endpoint_error}
 
         {:error, reason} ->
-          Logger.error("Minio health check failed for #{endpoint}: #{inspect(reason)}")
-          {:error, :minio_error}
+          Logger.error("Endpoint health check failed for #{endpoint}: #{inspect(reason)}")
+          {:error, :endpoint_error}
       end
     rescue
       e ->
-        Logger.error("Minio health check failed for #{endpoint}: #{inspect(e)}")
-        {:error, :minio_exception}
+        Logger.error("Endpoint health check failed for #{endpoint}: #{inspect(e)}")
+        {:error, :endpoint_exception}
     end
   end
 end

@@ -2,10 +2,11 @@ defmodule HealthCheck.Checkers.Mongo do
   @moduledoc false
   require Logger
 
-  def check(topology_name) do
+  def check(config \\ []) do
+    topology_name = config[:topology_name]
+
     if Code.ensure_loaded?(Mongo) and Process.whereis(topology_name) != nil do
       try do
-        # Use ping command to check connectivity
         case Mongo.command(topology_name, %{ping: 1}) do
           {:ok, _} ->
             :ok

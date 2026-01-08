@@ -2,7 +2,9 @@ defmodule HealthCheck.Checkers.Postgres do
   @moduledoc false
   require Logger
 
-  def check(repos) when is_list(repos) do
+  def check(config \\ []) do
+    repos = config[:repos] || []
+
     Enum.reduce(repos, :ok, fn repo, acc ->
       if acc == :ok do
         check_repo(repo)

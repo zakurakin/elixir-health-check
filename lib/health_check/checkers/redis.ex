@@ -2,7 +2,9 @@ defmodule HealthCheck.Checkers.Redis do
   @moduledoc false
   require Logger
 
-  def check(redis_conn_selector) when is_function(redis_conn_selector, 0) do
+  def check(config \\ []) do
+    redis_conn_selector = config[:redis_conn_selector]
+
     case Redix.command(redis_conn_selector.(), ["PING"], timeout: 5000) do
       {:ok, "PONG"} ->
         :ok

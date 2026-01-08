@@ -20,25 +20,39 @@ end
 
 ### Configuration
 
-Configure the checks in your `config.exs`:
+Configure the checks in your `config.exs`. The configuration is a keyword list where keys are dependency names and values are their respective configurations.
 
 ```elixir
 config :my_app, :health_check_config,
-  postgres: {HealthCheck.Checkers.Postgres, :check, [[MyApp.Repo]]},
-  redis: {HealthCheck.Checkers.Redis, :check, [fn -> MyApp.Redis.get_conn() end]},
-  kafka: {HealthCheck.Checkers.Kafka, :check, [:kaffe]},
-  mongo: {HealthCheck.Checkers.Mongo, :check, [:my_mongo_topology]},
-  minio: {HealthCheck.Checkers.Minio, :check, [[endpoint: "http://minio:9000/minio/health/live"]]}
+  postgres: [repos: [MyApp.Repo]],
+  redis: [redis_conn_selector: fn -> MyApp.Redis.get_conn() end],
+  kafka: [],
+  mongo: [topology: :my_mongo_topology],
+  endpoint: [endpoint: "http://minio:9000/minio/health/live"]
 ```
+
+The library provides default checkers for:
+- `:postgres` (requires `:repos`)
+- `:redis` (requires `:redis_conn_selector`)
+- `:kafka` (optional `:endpoints`)
+- `:mongo` (requires `:topology`)
+- `:endpoint` (requires `:endpoint`)
+
+### Postgres Check
+
+Verifies connectivity to one or more Ecto repositories by executing `SELECT 1`.
+
+### Redis Check
+
+Verifies connectivity to Redis by sending a `PING` command. You must provide a function that returns a connection (pid or atom).
 
 ### Kafka Check
 
-The Kafka check verifies that the `kaffe` application is running and attempts to list topics from the configured endpoints.
+The Kafka check verifies that the `kaffe` application is running and attempts to list topics from the configured endpoints using `:brod`.
 
-### Minio Check
+### Endpoint Check
 
-The Minio check uses `HTTPoison` to verify connectivity to the specified endpoint. It expects a status code less than 500 to be considered healthy.
-It can also pick up the endpoint from `MINIO_ENDPOINT` environment variable.
+The Endpoint check uses `HTTPoison` to verify connectivity to a specified URL. It expects a status code less than 500.
 
 ### Mongo Check
 
