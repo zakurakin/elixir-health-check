@@ -8,11 +8,12 @@ defmodule HealthCheck.MixProject do
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      description: "Simple health check library for Elixir applications with support for Ecto, Redix and Kaffe.",
+      description:
+        "Simple health check library for Elixir applications with support for Ecto, Redix and Kaffe.",
       package: package(),
       name: "HealthCheck",
-      source_url: "https://github.com/edenlabllc/health_check",
-      homepage_url: "https://github.com/edenlabllc/health_check",
+      source_url: "https://github.com/zakurakin/elixir-health-check",
+      homepage_url: "https://github.com/zakurakin/elixir-health-check",
       docs: [
         main: "HealthCheck",
         extras: ["README.md"]
@@ -40,14 +41,16 @@ defmodule HealthCheck.MixProject do
       {:ex_aws_s3, "~> 2.0", optional: true},
       {:hackney, "~> 1.9", optional: true},
       {:sweet_xml, "~> 0.6", optional: true},
-      {:ex_doc, "~> 0.29", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.32", only: :dev, runtime: false},
+      {:excoveralls, "~> 0.18", only: [:dev, :test]},
+      {:credo, "~> 1.7", runtime: false}
     ]
   end
 
   defp package do
     [
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/edenlabllc/health_check"}
+      links: %{"GitHub" => "https://github.com/zakurakin/elixir-health-check"}
     ]
   end
 end

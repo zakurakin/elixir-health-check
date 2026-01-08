@@ -3,11 +3,13 @@ defmodule HealthCheck.Checkers.Minio do
   require Logger
 
   def check(config \\ []) do
-    if Code.ensure_loaded?(ExAws.S3) do
+    if Code.ensure_loaded?(ExAws.S3) and
+         Enum.member?(Application.started_applications() |> Enum.map(&elem(&1, 0)), :ex_aws) and
+         has_aws_keys?() do
       bucket = config[:bucket] || System.get_env("MINIO_HEALTH_CHECK_BUCKET") || "health-check"
 
       try do
-        case ExAws.S3.list_objects(bucket) |> ExAws.request() do
+        case bucket |> ExAws.S3.list_objects() |> ExAws.request() do
           {:ok, _} ->
             :ok
 
@@ -24,6 +26,10 @@ defmodule HealthCheck.Checkers.Minio do
         e ->
           Logger.error("Minio health check failed: #{inspect(e)}")
           {:error, :minio_exception}
+      catch
+        kind, reason ->
+          Logger.error("Minio health check failed: #{inspect({kind, reason})}")
+          {:error, :minio_exception}
       end
     else
       :ok
@@ -31,11 +37,18 @@ defmodule HealthCheck.Checkers.Minio do
   end
 
   defp check_connectivity do
-    case ExAws.S3.list_buckets() |> ExAws.request() do
-      {:ok, _} -> :ok
+    case ExAws.request(ExAws.S3.list_buckets()) do
+      {:ok, _} ->
+        :ok
+
       {:error, reason} ->
         Logger.error("Minio connectivity check failed: #{inspect(reason)}")
         {:error, :minio_connectivity_error}
     end
+  end
+
+  defp has_aws_keys? do
+    System.get_env("AWS_ACCESS_KEY_ID") != nil or
+      Application.get_env(:ex_aws, :access_key_id) != nil
   end
 end

@@ -9,7 +9,9 @@ defmodule HealthCheck.Server do
 
     %{
       id: {Bandit, HealthCheck.Router, port},
-      start: {Bandit, :start_link, [[scheme: :http, plug: {HealthCheck.Router, otp_app: otp_app}, port: port]]},
+      start:
+        {Bandit, :start_link,
+         [[scheme: :http, plug: {HealthCheck.Router, otp_app: otp_app}, port: port]]},
       type: :worker
     }
   end

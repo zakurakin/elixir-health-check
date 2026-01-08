@@ -28,7 +28,11 @@ defmodule HealthCheck.Router do
         send_resp(conn, 200, "")
 
       {:error, failed_deps} ->
-        send_resp(conn, 503, Jason.encode!(%{status: "Service Unavailable", failed_dependencies: failed_deps}))
+        send_resp(
+          conn,
+          503,
+          Jason.encode!(%{status: "Service Unavailable", failed_dependencies: failed_deps})
+        )
     end
   end
 

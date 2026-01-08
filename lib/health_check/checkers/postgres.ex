@@ -15,7 +15,7 @@ defmodule HealthCheck.Checkers.Postgres do
   defp check_repo(repo) do
     if Code.ensure_loaded?(repo) do
       try do
-        Ecto.Adapters.SQL.query!(repo, "SELECT 1", [], [timeout: 5000])
+        Ecto.Adapters.SQL.query!(repo, "SELECT 1", [], timeout: 5000)
         :ok
       rescue
         e ->

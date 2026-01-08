@@ -15,8 +15,8 @@ defmodule HealthCheck.Checkers.MinioTest do
   alias HealthCheck.Checkers.Minio
 
   test "check/1 returns :ok if ExAws.S3 is not loaded" do
-     # Similar to kafka test
-     assert Minio.check() == :ok
+    # Similar to kafka test
+    assert Minio.check() == :ok
   end
 end
 
@@ -25,6 +25,6 @@ defmodule HealthCheck.Checkers.MongoTest do
   alias HealthCheck.Checkers.Mongo
 
   test "check/1 returns :ok if Mongo is not loaded" do
-     assert Mongo.check(:some_topology) == :ok
+    assert Mongo.check(:some_topology) == :ok
   end
 end

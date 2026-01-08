@@ -6,6 +6,7 @@ defmodule HealthCheckTest do
     checks = [
       test: {__MODULE__, :pass_check, []}
     ]
+
     assert HealthCheck.check(checks) == :ok
   end
 
@@ -14,6 +15,7 @@ defmodule HealthCheckTest do
       pass: {__MODULE__, :pass_check, []},
       fail: {__MODULE__, :fail_check, []}
     ]
+
     assert HealthCheck.check(checks) == {:error, [:fail]}
   end
 
