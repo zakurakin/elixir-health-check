@@ -3,60 +3,35 @@ defmodule HealthCheck.Checkers.Minio do
   require Logger
 
   def check(config \\ []) do
-    if minio_active?() do
-      perform_check(config)
+    endpoint = config[:endpoint] || System.get_env("MINIO_ENDPOINT")
+
+    if is_binary(endpoint) and endpoint != "" do
+      perform_check(endpoint, config)
     else
       :ok
     end
   end
 
-  defp minio_active? do
-    Code.ensure_loaded?(ExAws.S3) and
-      Enum.any?(Application.started_applications(), fn {app, _, _} -> app == :ex_aws end) and
-      has_aws_keys?()
-  end
-
-  defp perform_check(config) do
-    bucket = config[:bucket] || System.get_env("MINIO_HEALTH_CHECK_BUCKET") || "health-check"
+  defp perform_check(endpoint, config) do
+    timeout = config[:timeout] || 5000
 
     try do
-      case bucket |> ExAws.S3.list_objects() |> ExAws.request() do
-        {:ok, _} ->
+      case HTTPoison.get(endpoint, [], recv_timeout: timeout) do
+        {:ok, %HTTPoison.Response{status_code: code}} when code < 500 ->
           :ok
 
-        {:error, {:http_error, 404, _}} ->
-          # Bucket not found might be acceptable if we just want to check connectivity
-          # but let's try to list buckets instead if no bucket is provided
-          check_connectivity()
+        {:ok, %HTTPoison.Response{status_code: code}} ->
+          Logger.error("Minio health check failed for #{endpoint}: status code #{code}")
+          {:error, :minio_error}
 
         {:error, reason} ->
-          Logger.error("Minio health check failed for bucket #{bucket}: #{inspect(reason)}")
+          Logger.error("Minio health check failed for #{endpoint}: #{inspect(reason)}")
           {:error, :minio_error}
       end
     rescue
       e ->
-        Logger.error("Minio health check failed: #{inspect(e)}")
-        {:error, :minio_exception}
-    catch
-      kind, reason ->
-        Logger.error("Minio health check failed: #{inspect({kind, reason})}")
+        Logger.error("Minio health check failed for #{endpoint}: #{inspect(e)}")
         {:error, :minio_exception}
     end
-  end
-
-  defp check_connectivity do
-    case ExAws.request(ExAws.S3.list_buckets()) do
-      {:ok, _} ->
-        :ok
-
-      {:error, reason} ->
-        Logger.error("Minio connectivity check failed: #{inspect(reason)}")
-        {:error, :minio_connectivity_error}
-    end
-  end
-
-  defp has_aws_keys? do
-    System.get_env("AWS_ACCESS_KEY_ID") != nil or
-      Application.get_env(:ex_aws, :access_key_id) != nil
   end
 end

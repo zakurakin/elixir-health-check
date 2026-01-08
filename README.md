@@ -28,7 +28,7 @@ config :my_app, :health_check_config,
   redis: {HealthCheck.Checkers.Redis, :check, [fn -> MyApp.Redis.get_conn() end]},
   kafka: {HealthCheck.Checkers.Kafka, :check, [:kaffe]},
   mongo: {HealthCheck.Checkers.Mongo, :check, [:my_mongo_topology]},
-  minio: {HealthCheck.Checkers.Minio, :check, [[bucket: "my-bucket"]]}
+  minio: {HealthCheck.Checkers.Minio, :check, [[endpoint: "http://minio:9000/minio/health/live"]]}
 ```
 
 ### Kafka Check
@@ -37,7 +37,8 @@ The Kafka check verifies that the `kaffe` application is running and attempts to
 
 ### Minio Check
 
-The Minio check uses `ExAws.S3` to list objects in a specified bucket (or `health-check` by default) to verify connectivity.
+The Minio check uses `HTTPoison` to verify connectivity to the specified endpoint. It expects a status code less than 500 to be considered healthy.
+It can also pick up the endpoint from `MINIO_ENDPOINT` environment variable.
 
 ### Mongo Check
 

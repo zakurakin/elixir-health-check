@@ -1,42 +1,52 @@
 defmodule HealthCheck.Router do
   @moduledoc false
-  use Plug.Router
+  import Plug.Conn
 
-  plug(:match)
-  plug(:dispatch)
+  defmodule Handler do
+    @moduledoc false
+    use Plug.Router
 
-  def init(opts) do
-    opts
-  end
+    plug(:match)
+    plug(:dispatch)
 
-  def call(conn, opts) do
-    conn
-    |> assign(:otp_app, opts[:otp_app])
-    |> super(opts)
-  end
+    get "/liveness" do
+      send_resp(conn, 200, "")
+    end
 
-  get "/liveness" do
-    send_resp(conn, 200, "")
-  end
+    get "/readiness" do
+      otp_app = conn.assigns[:otp_app] || :elixir_health_check
+      checks = Application.get_env(otp_app, :health_check_config, [])
 
-  get "/readiness" do
-    otp_app = conn.assigns[:otp_app] || :elixir_health_check
-    checks = Application.get_env(otp_app, :health_check_config, [])
+      case HealthCheck.check(checks) do
+        :ok ->
+          send_resp(conn, 200, "")
 
-    case HealthCheck.check(checks) do
-      :ok ->
-        send_resp(conn, 200, "")
+        {:error, failed_deps} ->
+          send_resp(
+            conn,
+            503,
+            Jason.encode!(%{status: "Service Unavailable", failed_dependencies: failed_deps})
+          )
+      end
+    end
 
-      {:error, failed_deps} ->
-        send_resp(
-          conn,
-          503,
-          Jason.encode!(%{status: "Service Unavailable", failed_dependencies: failed_deps})
-        )
+    match _ do
+      send_resp(conn, 404, "Not Found")
     end
   end
 
-  match _ do
-    send_resp(conn, 404, "Not Found")
+  def init(opts), do: opts
+
+  def call(conn, opts) do
+    case conn.path_info do
+      [path] when path in ["liveness", "readiness"] ->
+        conn
+        |> assign(:otp_app, opts[:otp_app])
+        |> Handler.call(opts)
+        |> halt()
+
+      _ ->
+        conn
+    end
   end
 end
