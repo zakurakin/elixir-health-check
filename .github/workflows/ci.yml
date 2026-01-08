@@ -30,7 +30,7 @@ jobs:
           otp-version: ${{ env.OTP_VERSION }}
 
       - name: Retrieve Cached Dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: mix-cache
         with:
           path: |
@@ -64,7 +64,7 @@ jobs:
           otp-version: ${{ env.OTP_VERSION }}
 
       - name: Retrieve Cached Dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: mix-cache
         with:
           path: |
@@ -96,7 +96,7 @@ jobs:
           otp-version: ${{ env.OTP_VERSION }}
 
       - name: Retrieve Cached Dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: mix-cache
         with:
           path: |
