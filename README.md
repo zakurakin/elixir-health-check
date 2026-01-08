@@ -6,12 +6,12 @@ Dependencies are optional, so you only need to include what you use.
 
 ## Installation
 
-The package can be installed by adding `health_check` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `elixir_health_check` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:health_check, "~> 0.1.0"}
+    {:elixir_health_check, "~> 0.1.0"}
   ]
 end
 ```

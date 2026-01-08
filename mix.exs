@@ -3,7 +3,7 @@ defmodule HealthCheck.MixProject do
 
   def project do
     [
-      app: :health_check,
+      app: :elixir_health_check,
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
@@ -12,11 +12,11 @@ defmodule HealthCheck.MixProject do
       description:
         "Simple health check library for Elixir applications with support for Ecto, Redix and Kaffe.",
       package: package(),
-      name: "HealthCheck",
+      name: "ElixirHealthCheck",
       source_url: "https://github.com/zakurakin/elixir-health-check",
       homepage_url: "https://github.com/zakurakin/elixir-health-check",
       docs: [
-        main: "HealthCheck",
+        main: "ElixirHealthCheck",
         extras: ["README.md"]
       ]
     ]

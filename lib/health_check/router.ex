@@ -20,7 +20,7 @@ defmodule HealthCheck.Router do
   end
 
   get "/readiness" do
-    otp_app = conn.assigns[:otp_app] || :health_check
+    otp_app = conn.assigns[:otp_app] || :elixir_health_check
     checks = Application.get_env(otp_app, :health_check_config, [])
 
     case HealthCheck.check(checks) do
