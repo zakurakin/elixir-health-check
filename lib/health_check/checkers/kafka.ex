@@ -12,7 +12,7 @@ defmodule HealthCheck.Checkers.Kafka do
 
   defp kaffe_started? do
     Code.ensure_loaded?(Kaffe.Producer) and
-    Enum.any?(Application.started_applications(), fn {app, _, _} -> app == :kaffe end)
+      Enum.any?(Application.started_applications(), fn {app, _, _} -> app == :kaffe end)
   end
 
   defp do_check(config) do
