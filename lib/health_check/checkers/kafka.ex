@@ -10,7 +10,9 @@ defmodule HealthCheck.Checkers.Kafka do
 
         endpoints =
           Enum.map(endpoints, fn
-            {host, port} -> {to_charlist(host), port}
+            {host, port} ->
+              {to_charlist(host), port}
+
             endpoint when is_binary(endpoint) ->
               case String.split(endpoint, ":") do
                 [host, port] -> {to_charlist(host), String.to_integer(port)}
