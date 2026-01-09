@@ -8,6 +8,16 @@ defmodule HealthCheck.Checkers.Kafka do
       try do
         endpoints = config[:endpoints] || Application.get_env(:kaffe, :endpoints)
 
+        endpoints =
+          Enum.map(endpoints, fn
+            {host, port} -> {to_charlist(host), port}
+            endpoint when is_binary(endpoint) ->
+              case String.split(endpoint, ":") do
+                [host, port] -> {to_charlist(host), String.to_integer(port)}
+                [host] -> {to_charlist(host), 9092}
+              end
+          end)
+
         if is_list(endpoints) and not Enum.empty?(endpoints) do
           case :brod.get_metadata(endpoints, :all) do
             {:ok, _} ->
