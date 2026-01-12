@@ -16,7 +16,7 @@ defmodule HealthCheck.Checkers.Kafka do
   end
 
   defp do_check(config) do
-    endpoints = config[:endpoints] || Application.get_env(:kaffe, :endpoints)
+    endpoints = config[:endpoints]
     normalized_endpoints = normalize_endpoints(endpoints)
 
     case check_kafka_metadata(normalized_endpoints) do
