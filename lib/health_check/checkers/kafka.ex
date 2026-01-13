@@ -20,7 +20,7 @@ defmodule HealthCheck.Checkers.Kafka do
     normalized_endpoints = normalize_endpoints(endpoints)
 
     case check_kafka_metadata(normalized_endpoints) do
-      :ok -> :ok
+      {:ok, _} -> :ok
       {:error, reason} -> handle_error(reason)
     end
   rescue

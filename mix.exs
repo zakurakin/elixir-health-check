@@ -4,7 +4,7 @@ defmodule HealthCheck.MixProject do
   def project do
     [
       app: :elixir_health_check,
-      version: "0.1.5",
+      version: "0.1.6",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],

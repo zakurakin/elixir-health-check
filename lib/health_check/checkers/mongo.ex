@@ -7,7 +7,7 @@ defmodule HealthCheck.Checkers.Mongo do
 
     if Code.ensure_loaded?(Mongo) and Process.whereis(topology_name) != nil do
       try do
-        case Mongo.command(topology_name, %{ping: 1}) do
+        case Mongo.command(topology_name, [ping: 1]) do
           {:ok, _} ->
             :ok
 
