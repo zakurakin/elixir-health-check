@@ -17,10 +17,10 @@ defmodule HealthCheck.Checkers.Endpoint do
 
     try do
       case HTTPoison.get(endpoint, [], recv_timeout: timeout) do
-        {:ok, %HTTPoison.Response{status_code: code}} when code < 500 ->
+        {:ok, %{status_code: code}} when code < 500 ->
           :ok
 
-        {:ok, %HTTPoison.Response{status_code: code}} ->
+        {:ok, %{status_code: code}} ->
           Logger.error("Endpoint health check failed for #{endpoint}: status code #{code}")
           {:error, :endpoint_error}
 
