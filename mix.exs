@@ -4,7 +4,7 @@ defmodule HealthCheck.MixProject do
   def project do
     [
       app: :elixir_health_check,
-      version: "0.1.7",
+      version: "0.1.8",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
@@ -37,7 +37,7 @@ defmodule HealthCheck.MixProject do
       {:ecto, "~> 3.0", optional: true},
       {:ecto_sql, "~> 3.0", optional: true},
       {:redix, "~> 1.0", optional: true},
-      {:kaffe, "~> 2.0", optional: true},
+      {:kaffe, "~> 1.0 or ~> 2.0", optional: true},
       {:mongodb_driver, "~> 1.0", optional: true},
       {:ex_aws, "~> 2.1", optional: true},
       {:ex_aws_s3, "~> 2.0", optional: true},
