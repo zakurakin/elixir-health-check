@@ -25,6 +25,10 @@ defmodule HealthCheckTest do
     assert HealthCheck.execute(nil) == :ok
   end
 
+  test "check/1 returns :ok when list is empty" do
+    assert HealthCheck.check([]) == :ok
+  end
+
   def pass_check, do: :ok
   def fail_check, do: {:error, :failed}
 end
