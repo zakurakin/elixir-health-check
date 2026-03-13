@@ -43,7 +43,7 @@ defmodule HealthCheck.MixProject do
       {:ex_aws_s3, "~> 2.0", optional: true},
       {:hackney, "~> 1.9", optional: true},
       {:sweet_xml, "~> 0.6", optional: true},
-      {:ex_doc, "~> 0.32", runtime: false, only: [:dev, :test]},
+      {:ex_doc, "~> 0.32", runtime: false, only: :docs},
       {:excoveralls, "~> 0.18", only: [:dev, :test]},
       {:credo, "~> 1.7", runtime: false, only: [:dev, :test]}
     ]
