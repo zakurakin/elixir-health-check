@@ -4,7 +4,7 @@ defmodule HealthCheck.MixProject do
   def project do
     [
       app: :elixir_health_check,
-      version: "0.1.10",
+      version: "0.1.11",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
@@ -43,9 +43,9 @@ defmodule HealthCheck.MixProject do
       {:ex_aws_s3, "~> 2.0", optional: true},
       {:hackney, "~> 1.9", optional: true},
       {:sweet_xml, "~> 0.6", optional: true},
-      {:ex_doc, "~> 0.32", runtime: false},
+      {:ex_doc, "~> 0.32", runtime: false, only: [:dev, :test]},
       {:excoveralls, "~> 0.18", only: [:dev, :test]},
-      {:credo, "~> 1.7", runtime: false}
+      {:credo, "~> 1.7", runtime: false, only: [:dev, :test]}
     ]
   end
 
