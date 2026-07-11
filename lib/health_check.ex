@@ -2,6 +2,7 @@ defmodule HealthCheck do
   @moduledoc """
   Provides functions to check the health of the application and its dependencies.
   """
+  require Logger
 
   @doc """
   Checks the health of specified dependencies.
@@ -35,7 +36,19 @@ defmodule HealthCheck do
   end
 
   @doc false
-  def execute({m, f, a}), do: apply(m, f, a)
-  def execute(fun) when is_function(fun, 0), do: fun.()
-  def execute(_), do: :ok
+  def execute(check) do
+    do_execute(check)
+  rescue
+    e ->
+      Logger.error("Health check failed: #{inspect(e)}")
+      {:error, :health_check_exception}
+  catch
+    kind, reason ->
+      Logger.error("Health check failed: #{inspect({kind, reason})}")
+      {:error, :health_check_exception}
+  end
+
+  defp do_execute({m, f, a}), do: apply(m, f, a)
+  defp do_execute(fun) when is_function(fun, 0), do: fun.()
+  defp do_execute(_), do: :ok
 end

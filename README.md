@@ -26,16 +26,16 @@ Configure the checks in your `config.exs`. The configuration is a keyword list w
 config :my_app, :health_check_config,
   postgres: [repos: [MyApp.Repo]],
   redis: [redis_conn_selector: fn -> MyApp.Redis.get_conn() end],
-  kafka: [],
-  mongo: [topology: :my_mongo_topology],
+  kafka: [endpoints: ["kafka:9092"]],
+  mongo: [topology_name: :my_mongo_topology],
   endpoint: [endpoint: "http://minio:9000/minio/health/live"]
 ```
 
 The library provides default checkers for:
 - `:postgres` (requires `:repos`)
 - `:redis` (requires `:redis_conn_selector`)
-- `:kafka` (optional `:endpoints`)
-- `:mongo` (requires `:topology`)
+- `:kafka` (requires `:endpoints`)
+- `:mongo` (requires `:topology_name`; `:topology` is also accepted)
 - `:endpoint` (requires `:endpoint`)
 
 ### Postgres Check

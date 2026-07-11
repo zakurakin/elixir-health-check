@@ -25,6 +25,10 @@ defmodule HealthCheckTest do
     assert HealthCheck.execute(nil) == :ok
   end
 
+  test "execute/1 returns an error when a callable raises" do
+    assert HealthCheck.execute(fn -> raise "boom" end) == {:error, :health_check_exception}
+  end
+
   test "check/1 returns :ok when list is empty" do
     assert HealthCheck.check([]) == :ok
   end

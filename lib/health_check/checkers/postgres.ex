@@ -25,7 +25,8 @@ defmodule HealthCheck.Checkers.Postgres do
           {:error, repo}
       end
     else
-      :ok
+      Logger.error("Health check failed for #{inspect(repo)}: repo is not available")
+      {:error, repo}
     end
   end
 end
