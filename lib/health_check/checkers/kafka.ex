@@ -3,11 +3,22 @@ defmodule HealthCheck.Checkers.Kafka do
   require Logger
 
   def check(config \\ []) do
-    if kaffe_started?() do
-      do_check(config)
-    else
-      :ok
+    endpoints = normalize_endpoints(config[:endpoints])
+
+    cond do
+      endpoints == [] ->
+        handle_error(:no_endpoints)
+
+      not kaffe_started?() ->
+        handle_error(:kaffe_not_started)
+
+      true ->
+        do_check(endpoints)
     end
+  rescue
+    e ->
+      Logger.error("Kafka health check failed: #{inspect(e)}")
+      {:error, :kafka_exception}
   end
 
   defp kaffe_started? do
@@ -15,18 +26,11 @@ defmodule HealthCheck.Checkers.Kafka do
       Enum.any?(Application.started_applications(), fn {app, _, _} -> app == :kaffe end)
   end
 
-  defp do_check(config) do
-    endpoints = config[:endpoints]
-    normalized_endpoints = normalize_endpoints(endpoints)
-
-    case check_kafka_metadata(normalized_endpoints) do
+  defp do_check(endpoints) do
+    case check_kafka_metadata(endpoints) do
       {:ok, _} -> :ok
       {:error, reason} -> handle_error(reason)
     end
-  rescue
-    e ->
-      Logger.error("Kafka health check failed: #{inspect(e)}")
-      {:error, :kafka_exception}
   end
 
   defp normalize_endpoints(nil), do: []
@@ -51,8 +55,13 @@ defmodule HealthCheck.Checkers.Kafka do
   end
 
   defp handle_error(:no_endpoints) do
-    Logger.warning("Kafka health check: no endpoints configured")
-    :ok
+    Logger.error("Kafka health check failed: no endpoints configured")
+    {:error, :kafka_no_endpoints}
+  end
+
+  defp handle_error(:kaffe_not_started) do
+    Logger.error("Kafka health check failed: kaffe application is not started")
+    {:error, :kafka_not_started}
   end
 
   defp handle_error(reason) do
