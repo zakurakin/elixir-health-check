@@ -3,7 +3,7 @@ defmodule HealthCheck.Checkers.Kafka do
   require Logger
 
   def check(config \\ []) do
-    endpoints = config[:endpoints] |> normalize_endpoints()
+    endpoints = normalize_endpoints(config[:endpoints])
 
     cond do
       endpoints == [] ->

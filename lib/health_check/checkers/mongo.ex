@@ -30,29 +30,27 @@ defmodule HealthCheck.Checkers.Mongo do
   end
 
   defp do_check(topology_name) do
-    try do
-      case Mongo.command(topology_name, ping: 1) do
-        {:ok, _} ->
-          :ok
+    case Mongo.command(topology_name, ping: 1) do
+      {:ok, _} ->
+        :ok
 
-        {:error, reason} ->
-          Logger.error(
-            "Mongo health check failed for #{inspect(topology_name)}: #{inspect(reason)}"
-          )
-
-          {:error, topology_name}
-      end
-    rescue
-      e ->
-        Logger.error("Mongo health check failed for #{inspect(topology_name)}: #{inspect(e)}")
-        {:error, topology_name}
-    catch
-      kind, reason ->
+      {:error, reason} ->
         Logger.error(
-          "Mongo health check failed for #{inspect(topology_name)}: #{inspect({kind, reason})}"
+          "Mongo health check failed for #{inspect(topology_name)}: #{inspect(reason)}"
         )
 
         {:error, topology_name}
     end
+  rescue
+    e ->
+      Logger.error("Mongo health check failed for #{inspect(topology_name)}: #{inspect(e)}")
+      {:error, topology_name}
+  catch
+    kind, reason ->
+      Logger.error(
+        "Mongo health check failed for #{inspect(topology_name)}: #{inspect({kind, reason})}"
+      )
+
+      {:error, topology_name}
   end
 end
