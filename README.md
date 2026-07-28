@@ -11,7 +11,7 @@ The package can be installed by adding `elixir_health_check` to your list of dep
 ```elixir
 def deps do
   [
-    {:elixir_health_check, "~> 0.1.0"}
+    {:elixir_health_check, "~> 0.1.13"}
   ]
 end
 ```
