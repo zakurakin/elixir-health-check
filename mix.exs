@@ -4,7 +4,7 @@ defmodule HealthCheck.MixProject do
   def project do
     [
       app: :elixir_health_check,
-      version: "0.1.13",
+      version: "0.1.14",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
@@ -33,7 +33,7 @@ defmodule HealthCheck.MixProject do
       {:plug, "~> 1.14"},
       {:jason, "~> 1.4"},
       {:bandit, "~> 1.0"},
-      {:httpoison, "~> 2.0", optional: true},
+      {:httpoison, "~> 3.0", optional: true},
       {:ecto, "~> 3.0", optional: true},
       {:ecto_sql, "~> 3.0", optional: true},
       {:redix, "~> 1.0", optional: true},
@@ -41,8 +41,8 @@ defmodule HealthCheck.MixProject do
       {:mongodb_driver, "~> 1.0", optional: true},
       {:ex_aws, "~> 2.1", optional: true},
       {:ex_aws_s3, "~> 2.0", optional: true},
-      {:hackney, "~> 1.9", optional: true},
-      {:sweet_xml, "~> 0.6", optional: true},
+      {:hackney, "~> 4.8", optional: true},
+      {:sweet_xml, "~> 0.7", optional: true},
       {:ex_doc, "~> 0.32", runtime: false, only: :docs},
       {:excoveralls, "~> 0.18", only: [:dev, :test]},
       {:credo, "~> 1.7", runtime: false, only: [:dev, :test]}
